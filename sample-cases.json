@@ -1,0 +1,293 @@
+{
+  "note": "Human-authored labels; not measured live model results. Add a configured modelId to each input. Treat plausible label ambiguity through reviewer adjudication.",
+  "cases": [
+    {
+      "caseId": "ar-paid-pending",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "ar-paid-pending",
+        "replyLocale": "ar",
+        "text": "خلصت الطلب DZ-1042، علاش الدفع مازال معلق؟"
+      },
+      "expectedTriage": {
+        "language": "ar",
+        "intent": "payment_issue",
+        "order_id": "DZ-1042",
+        "claims_paid": true,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "billing_review",
+        "verification": "verified",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "fr-status",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "fr-status",
+        "replyLocale": "fr",
+        "text": "Bonjour, quel est le statut de ma commande DZ-1043 ?"
+      },
+      "expectedTriage": {
+        "language": "fr",
+        "intent": "order_status",
+        "order_id": "DZ-1043",
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "verified",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "mixed-status",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "mixed-status",
+        "replyLocale": "ar",
+        "text": "سلام، ma commande DZ-1043 وين راهي؟"
+      },
+      "expectedTriage": {
+        "language": "mixed",
+        "intent": "order_status",
+        "order_id": "DZ-1043",
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "verified",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "ar-digits",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "ar-digits",
+        "replyLocale": "ar",
+        "text": "واش حالة الطلب DZ-١٠٤٣؟"
+      },
+      "expectedTriage": {
+        "language": "ar",
+        "intent": "order_status",
+        "order_id": "DZ-1043",
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "verified",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "fr-refund",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "fr-refund",
+        "replyLocale": "fr",
+        "text": "Je demande un remboursement pour la commande DZ-1043."
+      },
+      "expectedTriage": {
+        "language": "fr",
+        "intent": "refund",
+        "order_id": "DZ-1043",
+        "claims_paid": false,
+        "requests_refund": true
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "refund_review",
+        "verification": "verified",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "ar-refund",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "ar-refund",
+        "replyLocale": "ar",
+        "text": "نحب نسترجع دراهمي على الطلب DZ-1042."
+      },
+      "expectedTriage": {
+        "language": "ar",
+        "intent": "refund",
+        "order_id": "DZ-1042",
+        "claims_paid": false,
+        "requests_refund": true
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "refund_review",
+        "verification": "verified",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "missing-id",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "missing-id",
+        "replyLocale": "fr",
+        "text": "Bonjour, où est ma commande ?"
+      },
+      "expectedTriage": {
+        "language": "fr",
+        "intent": "order_status",
+        "order_id": null,
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "missing_order_id",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "two-ids",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "two-ids",
+        "replyLocale": "fr",
+        "text": "Quel est le statut de DZ-1042 et DZ-1043 ?"
+      },
+      "expectedTriage": {
+        "language": "fr",
+        "intent": "order_status",
+        "order_id": null,
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "ambiguous_order_id",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "foreign-customer",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "foreign-customer",
+        "replyLocale": "fr",
+        "text": "Quel est le statut de DZ-2042 ?"
+      },
+      "expectedTriage": {
+        "language": "fr",
+        "intent": "order_status",
+        "order_id": "DZ-2042",
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "not_found_or_forbidden",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "foreign-tenant",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "foreign-tenant",
+        "replyLocale": "ar",
+        "text": "ما حالة DZ-3042؟"
+      },
+      "expectedTriage": {
+        "language": "ar",
+        "intent": "order_status",
+        "order_id": "DZ-3042",
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "not_found_or_forbidden",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "stale-order",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "stale-order",
+        "replyLocale": "ar",
+        "text": "ما حالة طلبي DZ-1044؟"
+      },
+      "expectedTriage": {
+        "language": "ar",
+        "intent": "order_status",
+        "order_id": "DZ-1044",
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "stale",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    },
+    {
+      "caseId": "general-inquiry",
+      "input": {
+        "tenantId": "demo-shop",
+        "customerId": "customer-001",
+        "source": "manual",
+        "messageId": "general-inquiry",
+        "replyLocale": "fr",
+        "text": "Bonjour, je souhaite parler au support."
+      },
+      "expectedTriage": {
+        "language": "fr",
+        "intent": "other",
+        "order_id": null,
+        "claims_paid": false,
+        "requests_refund": false
+      },
+      "expectedPolicyIfTriageMatches": {
+        "queue": "support",
+        "verification": "missing_order_id",
+        "requiresHumanApproval": true,
+        "deliveryStatus": "not_sent"
+      }
+    }
+  ]
+}
